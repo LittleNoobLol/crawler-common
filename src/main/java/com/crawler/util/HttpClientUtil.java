@@ -30,6 +30,7 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -40,9 +41,8 @@ import org.apache.http.util.EntityUtils;
 import com.crawler.entity.Page;
 
 /**
- * HttpClient工具类
+ * HttpClient 池工具类
  * 
- * @return
  */
 public class HttpClientUtil {
 
@@ -156,11 +156,15 @@ public class HttpClientUtil {
 		return httpClient;
 	}
 
-	/**
-	 * GET请求URL获取内容
+	/***
 	 * 
-	 * @param url
-	 * @return
+	 * @Description GET请求内容
+	 * @author lixin
+	 * @date 2017年8月30日
+	 * @param 请求路径
+	 * @param 请求头,可以为空
+	 * @return 请求网站后相应结果
+	 * @throws Exception
 	 */
 	public static String get(String url, Map<String, String> headers) throws Exception {
 		HttpGet httpget = new HttpGet(url);
@@ -174,41 +178,7 @@ public class HttpClientUtil {
 			EntityUtils.consume(entity);
 			return result;
 		} catch (IOException e) {
-			throw new Exception();
-		} finally {
-			try {
-				if (response != null)
-					response.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static String get(String url) throws Exception {
-		return get(url, null);
-	}
-
-	/**
-	 * GET请求URL获取内容
-	 * 
-	 * @param url
-	 * @return
-	 */
-	public static Page getPage(String url, Map<String, String> headers) throws Exception {
-		Page page = null;
-		HttpGet httpget = new HttpGet(url);
-		config(httpget, headers);
-		CloseableHttpResponse response = null;
-		try {
-			response = getHttpClient(url).execute(httpget, HttpClientContext.create());
-			HttpEntity entity = response.getEntity();
-			String html = EntityUtils.toString(entity, "utf-8");
-			page=new Page(html,response.getAllHeaders(),response.getStatusLine().getStatusCode());
-			EntityUtils.consume(entity);
-			return page;
-		} catch (IOException e) {
-			throw new Exception();
+			throw e;
 		} finally {
 			try {
 				if (response != null)
@@ -221,21 +191,55 @@ public class HttpClientUtil {
 
 	/***
 	 * 
-	 * @Description POST请求内容
+	 * @Description GET请求内容
 	 * @author lixin
 	 * @date 2017年8月30日
-	 * @param url
-	 * @param headers
-	 * @param formParams
-	 * @return
+	 * @param 请求路径
+	 * @param 请求头,可以为空
+	 * @return Page对象
 	 * @throws Exception
 	 */
-	public static String post(String url, Map<String, String> headers, List<BasicNameValuePair> formParams)
-			throws Exception {
+	public static Page getPage(String url, Map<String, String> headers) throws Exception {
+		Page page = null;
+		HttpGet httpget = new HttpGet(url);
+		config(httpget, headers);
+		CloseableHttpResponse response = null;
+		try {
+			response = getHttpClient(url).execute(httpget, HttpClientContext.create());
+			HttpEntity entity = response.getEntity();
+			String html = EntityUtils.toString(entity, "utf-8");
+			page = new Page(html, response.getAllHeaders(), response.getStatusLine().getStatusCode());
+			EntityUtils.consume(entity);
+			return page;
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			try {
+				if (response != null)
+					response.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
+	/***
+	 * 
+	 * @Description POST请求表单内容
+	 * @author lixin
+	 * @date 2017年8月30日
+	 * @param 请求路径
+	 * @param 请求头,可以为空
+	 * @param 请求表单参数,可以为空
+	 * @return 请求网站后相应结果
+	 * @throws Exception
+	 */
+	public static String postFromData(String url, Map<String, String> headers, List<BasicNameValuePair> formParams)
+			throws Exception {
 		HttpPost httpPost = new HttpPost(url);
+
 		if (formParams != null) {
-			HttpEntity postParam = new UrlEncodedFormEntity(formParams, "UTF-8");
+			HttpEntity postParam = new UrlEncodedFormEntity(formParams, "utf-8");
 			httpPost.setEntity(postParam);
 		}
 
@@ -248,7 +252,46 @@ public class HttpClientUtil {
 			EntityUtils.consume(entity);
 			return result;
 		} catch (IOException e) {
-			throw new Exception();
+			throw e;
+		} finally {
+			try {
+				if (response != null)
+					response.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/***
+	 * 
+	 * @Description POST 请求JSON 参数格式内容
+	 * @author lixin
+	 * @date 2017年8月30日
+	 * @param 请求路径
+	 * @param 请求头,可以为空
+	 * @param 请求JSON参数,可以为空
+	 * @return 请求网站后相应结果
+	 * @throws Exception
+	 */
+	public static String postJson(String url, Map<String, String> headers, String params) throws Exception {
+		HttpPost httpPost = new HttpPost(url);
+
+		if (params != null) {
+			HttpEntity postParam = new StringEntity(params, "utf-8");
+			httpPost.setEntity(postParam);
+		}
+
+		config(httpPost, headers);
+		CloseableHttpResponse response = null;
+		try {
+			response = getHttpClient(url).execute(httpPost, HttpClientContext.create());
+			HttpEntity entity = response.getEntity();
+			String result = EntityUtils.toString(entity, "utf-8");
+			EntityUtils.consume(entity);
+			return result;
+		} catch (IOException e) {
+			throw e;
 		} finally {
 			try {
 				if (response != null)
