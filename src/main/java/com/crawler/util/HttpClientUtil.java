@@ -37,6 +37,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import com.crawler.entity.Page;
 
@@ -52,6 +53,8 @@ public class HttpClientUtil {
 	private static CloseableHttpClient httpClient = null;
 
 	private final static Object syncLock = new Object();
+
+	static Logger log = Logger.getLogger(HttpClientUtil.class);
 
 	private static void config(HttpRequestBase httpRequestBase, Map<String, String> headers) {
 		// 设置Header等
@@ -184,7 +187,7 @@ public class HttpClientUtil {
 				if (response != null)
 					response.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("get请求关闭对象失败", e);
 			}
 		}
 	}
@@ -218,7 +221,7 @@ public class HttpClientUtil {
 				if (response != null)
 					response.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("getPage请求关闭对象失败", e);
 			}
 		}
 	}
@@ -258,7 +261,7 @@ public class HttpClientUtil {
 				if (response != null)
 					response.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("postFromData请求关闭对象失败", e);
 			}
 		}
 	}
@@ -297,7 +300,7 @@ public class HttpClientUtil {
 				if (response != null)
 					response.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("postJson请求关闭对象失败", e);
 			}
 		}
 	}
