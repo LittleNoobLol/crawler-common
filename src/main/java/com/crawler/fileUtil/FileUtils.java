@@ -9,9 +9,10 @@ import java.io.IOException;
 public class FileUtils {
 
 	/**
-	 * 读取文件
-	 * @param path
-	 * @return
+	 * 
+	 * @Description 读取文件
+	 * @param 文件路径
+	 * @return 文件内容
 	 */
 	public static String fileRead(String path) {
 		File file = new File(path);
@@ -30,9 +31,9 @@ public class FileUtils {
 	}
 
 	/**
-	 * 写入文件
-	 * @param path
-	 * @param content
+	 * 
+	 * @Description 写入文件
+	 * @param 文件路径
 	 */
 	public static void fileWrite(String path, String content) {
 		FileOutputStream fop = null;
