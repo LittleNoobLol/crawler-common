@@ -176,7 +176,6 @@ public class HttpClientUtil {
 		try {
 			response = getHttpClient(url).execute(httpget, HttpClientContext.create());
 			HttpEntity entity = response.getEntity();
-			response.getAllHeaders();
 			String result = EntityUtils.toString(entity, "utf-8");
 			EntityUtils.consume(entity);
 			return result;

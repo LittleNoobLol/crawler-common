@@ -16,7 +16,6 @@ public class HeaderConstant {
 		header.put("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3");
 		header.put("Cache-Control", "max-age=0");
 		header.put("Connection", "keep-alive");
-		header.put("Host", "www.juksy.com");
 		header.put("Upgrade-Insecure-Requests", "1");
 	}
 

@@ -16,7 +16,7 @@ import com.alibaba.druid.pool.DruidPooledConnection;
  * 要实现单例模式，保证全局只有一个数据库连接池
  */
 public class DBPoolConnection {
-	
+
 	static Logger log = Logger.getLogger(DBPoolConnection.class);
 	private static DBPoolConnection dbPoolConnection = null;
 	private static DruidDataSource druidDataSource = null;

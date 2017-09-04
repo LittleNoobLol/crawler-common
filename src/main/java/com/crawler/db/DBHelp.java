@@ -48,7 +48,8 @@ public class DBHelp {
 	/**
 	 * 执行更新
 	 *
-	 * @param sql传入的预设的 sql语句
+	 * @param sql传入的预设的
+	 *            sql语句
 	 * @param params问号参数列表
 	 * @return 影响行数
 	 */
